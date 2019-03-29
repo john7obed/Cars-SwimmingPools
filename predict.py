@@ -6,6 +6,10 @@ import time
 import pickle
 from PIL import Image
 
+project = 'PROJECT_NAME' 
+model = 'MODEL_NAME'
+version = 'VERSION_NUMBER'
+
 def predict_online(project, model, version, instances):
     service = googleapiclient.discovery.build('ml', 'v1')
     name = 'projects/{}/models/{}/versions/{}'.format(project, model,version)
@@ -17,10 +21,17 @@ def predict_online(project, model, version, instances):
 
     return response['predictions']
 
+
+def predict_image(img_path, project=project, model=model, version=version):
+    img = Image.open(img_path)
+    output_str = io.BytesIO()
+    img.save(output_str, "JPEG")
+    json_img = {"inputs":{"b64": base64.b64encode(output_str.getvalue()).decode('ascii')}}
+    output_str.close()
+    
+    return predict_online(project, model, version, json_img)
+
 def main():
-    project = 'PROJECT_NAME' 
-    model = 'MODEL_NAME'
-    version = 'VERSION_NUMBER'
 
     height = width = 224
 
@@ -47,7 +58,7 @@ def main():
         status = True
         while True:
             try:
-                result = predict_online(project, model, instance, version)
+                result = predict_online(project, model, version, instance)
             except Exception as e:
                 print(str(e))
                 continue

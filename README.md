@@ -89,6 +89,10 @@ Execute *predict.py* to perform online prediction for all the images in the test
 
 `python predict.py`
 
+## Results
+
+![](images/cars.png "cars") ![alt text](images/pools.png "cars")
+
 ## Prerequisites
 
 The following are the packages required to run the above.
